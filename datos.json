@@ -1,11 +1,6 @@
 {
   "galeria": [
     {
-      "titulo": "Prueba 4",
-      "desc": "prueba 4",
-      "imagen": "images/fulls/09.jpg"
-    },
-    {
       "titulo": "prueba3",
       "desc": "prueba3",
       "imagen": "images/fulls/01.jpg"
@@ -19,6 +14,11 @@
       "titulo": "prueba",
       "desc": "prueba",
       "imagen": "images/fulls/foto-1-.jpg"
+    },
+    {
+      "titulo": "Sin título",
+      "desc": "...",
+      "imagen": "images/fulls/640772163_18562958110063191_8993651678424887382_n.jpg"
     }
   ]
 }
