@@ -1,24 +1,8 @@
 {
   "galeria": [
     {
-      "titulo": "prueba3",
-      "desc": "prueba3",
-      "imagen": "images/fulls/01.jpg"
-    },
-    {
-      "titulo": "prueba2",
-      "desc": "prueba2",
-      "imagen": "images/fulls/foto-3-.jpg"
-    },
-    {
-      "titulo": "prueba",
-      "desc": "prueba",
-      "imagen": "images/fulls/foto-1-.jpg"
-    },
-    {
-      "titulo": "Sin título",
-      "desc": "...",
-      "imagen": "images/fulls/640772163_18562958110063191_8993651678424887382_n.jpg"
+      "imagen": "images/fulls/529951149_18516197002063191_108870610473122112_n.webp",
+      "titulo": "Vacaciones 2025"
     }
   ]
 }
