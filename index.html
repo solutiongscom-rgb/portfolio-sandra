@@ -9,30 +9,36 @@
 		
 		<style>
 			/* ==========================================================
-			   PARCHE DE COMPATIBILIDAD CON GOOGLE SHEETS
+			   SOLUCIÓN MOSAICO UNIFORME (PANORÁMICO)
 			   ========================================================== */
-			
-			/* 1. Mantenemos el mosaico original pero forzamos que
-			   todas las fotos tengan la misma altura (panorámica) */
+
+			/* 1. Forzamos que todos los cuadritos midan lo mismo de alto */
 			#thumbnails article {
-				height: 280px !important; /* Altura original de la plantilla */
-				overflow: hidden; /* Corta lo que sobre si no es panorámica */
-				background: #000; /* Fondo negro si la foto es más estrecha */
+				height: 250px !important; /* Altura fija para todas las miniaturas */
+				overflow: hidden;
+				background-color: #000;
 			}
 
-			/* 2. La propiedad mágica: object-fit cover. 
-			   Esto estira/recorta la foto para que LLENE el hueco panorámico
-			   sin deformarse, eliminando bandas negras de forma inteligente. */
+			/* 2. Hacemos que la foto rellene el espacio sin bandas negras */
 			#thumbnails article .thumbnail img {
 				width: 100% !important;
 				height: 100% !important;
-				object-fit: cover !important; /* ESTA ES LA CLAVE */
+				object-fit: cover !important; /* ESTO ES LO MÁS IMPORTANTE: Rellena y recorta */
 				object-position: center !important; /* Centra el recorte */
+				display: block;
 			}
 
-			/* Evita que los títulos se muevan */
+			/* Ajuste para que los títulos no se pisen */
 			#thumbnails article h2 {
 				pointer-events: none;
+				text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+			}
+
+			/* Evita que el mosaico se vea vacío mientras carga */
+			#thumbnails {
+				display: flex;
+				flex-wrap: wrap;
+				min-height: 100vh;
 			}
 		</style>
 	</head>
@@ -40,78 +46,73 @@
 
 		<div id="main">
 
-				<header id="header">
-						<h1>Sandra Martinez</h1>
-						<p>Portfolio</p>
-						<ul class="icons">
-							<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-							<li><a href="#" class="icon fa-envelope"><span class="label">Email</span></a></li>
-						</ul>
-					</header>
+			<header id="header">
+				<h1>Sandra Martinez</h1>
+				<p>Portfolio</p>
+				<ul class="icons">
+					<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+					<li><a href="#" class="icon fa-envelope"><span class="label">Email</span></a></li>
+				</ul>
+			</header>
 
-				<section id="thumbnails">
-						</section>
+			<section id="thumbnails">
+				</section>
 
-				<footer id="footer">
-						<ul class="copyright">
-							<li>&copy; Portfolio.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a>.</li>
-						</ul>
-					</footer>
+			<footer id="footer">
+				<ul class="copyright">
+					<li>&copy; Portfolio.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a>.</li>
+				</ul>
+			</footer>
 
-			</div>
+		</div>
 
 		<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			
-			<script>
-				// TU URL MÁGICA DE GOOGLE APPS SCRIPT
-				const urlGoogleSheet = 'https://script.google.com/macros/s/AKfycbxQmQGl6ejwxhUVy0irWLtreT8t-EQzdiIqJAqpwlmhQM4fEaHXTzZruaWofNDLFB0/exec';
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		
+		<script>
+			// TU URL DE GOOGLE SHEETS
+			const urlAPI = 'https://script.google.com/macros/s/AKfycbxQmQGl6ejwxhUVy0irWLtreT8t-EQzdiIqJAqpwlmhQM4fEaHXTzZruaWofNDLFB0/exec';
 
-				fetch(urlGoogleSheet)
-					.then(response => response.json())
-					.then(data => {
-						const contenedor = document.getElementById('thumbnails');
+			fetch(urlAPI)
+				.then(response => response.json())
+				.then(data => {
+					const contenedor = document.getElementById('thumbnails');
+					
+					if (data.galeria && data.galeria.length > 0) {
+						contenedor.innerHTML = ''; 
 						
-						if (data.galeria && data.galeria.length > 0) {
-							contenedor.innerHTML = ''; // Limpiamos la zona de carga
-							
-							// Inyectamos las fotos de Sandra
-							data.galeria.forEach(foto => {
-								if(foto.imagen) { // Solo si hay enlace de imagen
-									const articulo = document.createElement('article');
-									articulo.innerHTML = `
-										<a class="thumbnail" href="${foto.imagen}">
-											<img src="${foto.imagen}" alt="${foto.titulo || ''}" />
-										</a>
-										<h2>${foto.titulo || ''}</h2>
-										<p>${foto.desc || ''}</p>
-									`;
-									contenedor.appendChild(articulo);
-								}
-							});
-						}
-						// Cargamos los efectos visuales de la plantilla Lens
-						cargarEfectosLens();
-					})
-					.catch(error => {
-						console.error("Error cargando fotos:", error);
-						cargarEfectosLens();
-					});
+						data.galeria.forEach(foto => {
+							if(foto.imagen && foto.imagen.trim() !== "") {
+								const articulo = document.createElement('article');
+								articulo.innerHTML = `
+									<a class="thumbnail" href="${foto.imagen}">
+										<img src="${foto.imagen}" alt="${foto.titulo || ''}" />
+									</a>
+									<h2>${foto.titulo || ''}</h2>
+									<p>${foto.desc || ''}</p>
+								`;
+								contenedor.appendChild(articulo);
+							}
+						});
+					}
+					activarDiseno();
+				})
+				.catch(error => {
+					console.error("Error:", error);
+					activarDiseno();
+				});
 
-				function cargarEfectosLens() {
-					const script = document.createElement('script');
-					script.src = 'assets/js/main.js';
-					
-					script.onload = function() {
-						// Cuando el diseño termine de cargar, ¡Levantamos el telón negro!
-						setTimeout(() => {
-							document.body.classList.remove('is-preload-0', 'is-preload-1', 'is-preload-2');
-						}, 300);
-					};
-					
-					document.body.appendChild(script);
-				}
-			</script>
+			function activarDiseno() {
+				const script = document.createElement('script');
+				script.src = 'assets/js/main.js';
+				script.onload = function() {
+					setTimeout(() => {
+						document.body.classList.remove('is-preload-0', 'is-preload-1', 'is-preload-2');
+					}, 300);
+				};
+				document.body.appendChild(script);
+			}
+		</script>
 	</body>
 </html>
