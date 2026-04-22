@@ -8,24 +8,53 @@
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		
 		<style>
-			/* CORRECCIÓN DE MOSAICO: Para que todas las fotos midan lo mismo */
+			/* ==========================================================
+			   SOLUCIÓN DEFINITIVA: MOSAICO CUADRADO Y SIN BORDES
+			   ========================================================== */
+
+			/* 1. Definimos los cuadros del mosaico como CUADRADOS perfectos */
 			#thumbnails article {
-				height: 30vh; /* Altura uniforme basada en la pantalla */
-				min-height: 200px;
-				background-color: #111;
+				width: 250px !important;  /* Ancho fijo (puedes subirlo o bajarlo) */
+				height: 250px !important; /* ALTO IGUAL AL ANCHO = CUADRADO */
+				overflow: hidden;
+				margin: 5px !important; /* Un pequeño espacio entre fotos */
+				padding: 0 !important;
+				border: none !important; /* Quitamos bordes raros de la plantilla */
+				display: inline-block; /* Para que se alineen uno al lado del otro */
+				vertical-align: top;
+				background: #000; /* Fondo negro si la foto falla */
 			}
 
+			/* 2. Forzamos que el enlace ocupe todo el cuadro */
+			#thumbnails article .thumbnail {
+				width: 100% !important;
+				height: 100% !important;
+				display: block !important;
+				margin: 0 !important;
+				padding: 0 !important;
+				border: none !important;
+			}
+
+			/* 3. La MAGIA: object-fit cover en un cuadro perfecto ELIMINA las bandas negras */
 			#thumbnails article .thumbnail img {
 				width: 100% !important;
 				height: 100% !important;
-				object-fit: cover !important; /* Corta la foto para que llene el hueco */
-				object-position: center !important;
-				display: block;
+				object-fit: cover !important; /* ESTA ES LA CLAVE: Llena el cuadro y recorta lo sobrante */
+				object-position: center !important; /* Centra el recorte para no cortar cabezas */
+				margin: 0 !important;
+				padding: 0 !important;
+				border: none !important;
 			}
 
-			/* Evita que el título se mueva si la foto es distinta */
+			/* Evita que los títulos se muevan */
 			#thumbnails article h2 {
 				pointer-events: none;
+			}
+			
+			/* Limpieza adicional del contenedor principal */
+			#thumbnails {
+				text-align: center; /* Centra el mosaico entero en la pantalla */
+				padding: 20px !important;
 			}
 		</style>
 	</head>
@@ -35,7 +64,7 @@
 
 				<header id="header">
 						<h1>Sandra Martinez</h1>
-						<p>Portfolio Fotográfico</p>
+						<p>Portfolio</p>
 						<ul class="icons">
 							<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
 							<li><a href="#" class="icon fa-envelope"><span class="label">Email</span></a></li>
@@ -58,7 +87,7 @@
 			<script src="assets/js/breakpoints.min.js"></script>
 			
 			<script>
-				// CONEXIÓN CON TU GOOGLE SHEETS
+				// TU URL MÁGICA DE GOOGLE APPS SCRIPT
 				const urlGoogleSheet = 'https://script.google.com/macros/s/AKfycbxQmQGl6ejwxhUVy0irWLtreT8t-EQzdiIqJAqpwlmhQM4fEaHXTzZruaWofNDLFB0/exec';
 
 				fetch(urlGoogleSheet)
@@ -67,8 +96,9 @@
 						const contenedor = document.getElementById('thumbnails');
 						
 						if (data.galeria && data.galeria.length > 0) {
-							contenedor.innerHTML = ''; 
+							contenedor.innerHTML = ''; // Limpiamos la zona de carga
 							
+							// Inyectamos las fotos de Sandra
 							data.galeria.forEach(foto => {
 								if(foto.imagen) { // Solo si hay enlace de imagen
 									const articulo = document.createElement('article');
@@ -83,21 +113,25 @@
 								}
 							});
 						}
-						cargarEfectos();
+						// Cargamos los efectos visuales de la plantilla Lens
+						cargarEfectosLens();
 					})
 					.catch(error => {
 						console.error("Error cargando fotos:", error);
-						cargarEfectos();
+						cargarEfectosLens();
 					});
 
-				function cargarEfectos() {
+				function cargarEfectosLens() {
 					const script = document.createElement('script');
 					script.src = 'assets/js/main.js';
+					
 					script.onload = function() {
+						// Cuando el diseño termine de cargar, ¡Levantamos el telón negro!
 						setTimeout(() => {
 							document.body.classList.remove('is-preload-0', 'is-preload-1', 'is-preload-2');
 						}, 300);
 					};
+					
 					document.body.appendChild(script);
 				}
 			</script>
