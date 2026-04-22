@@ -1,3 +1,9 @@
 {
-  "galeria": []
+  "galeria": [
+    {
+      "titulo": "prueba",
+      "desc": "prueba",
+      "imagen": "images/fulls/foto-1-.jpg"
+    }
+  ]
 }
