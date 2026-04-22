@@ -4,6 +4,11 @@
       "titulo": "prueba",
       "desc": "prueba",
       "imagen": "images/fulls/foto-1-.jpg"
+    },
+    {
+      "titulo": "prueba2",
+      "desc": "prueba2",
+      "imagen": "images/fulls/foto-3-.jpg"
     }
   ]
 }
