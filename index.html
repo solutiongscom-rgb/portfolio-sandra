@@ -16,16 +16,17 @@
 				grid-template-columns: repeat(2, 1fr) !important;
 				grid-gap: 4px !important;
 				padding: 4px !important;
-				background: #111 !important;
+				background: #f0f0f0 !important; /* Fondo gris claro entre huecos, igual que el panel */
 			}
 
-			/* 2. Cada miniatura: altura compacta */
+			/* 2. Cada miniatura: altura compacta, sin fondo negro */
 			#thumbnails article {
 				margin: 0 !important;
 				height: 120px !important;
 				width: 100% !important;
 				position: relative !important;
 				overflow: hidden !important;
+				background: #e8e8e8 !important; /* Gris suave mientras carga, no negro */
 			}
 
 			/* 3. Contenedor del enlace/thumbnail */
@@ -34,32 +35,40 @@
 				height: 100% !important;
 				width: 100% !important;
 				border: none !important;
+				outline: none !important;
 			}
 
-			/* 4. Imagen: relleno total sin bandas negras */
+			/* 4. Imagen: relleno total sin bandas */
 			#thumbnails article .thumbnail img {
 				width: 100% !important;
 				height: 100% !important;
 				object-fit: cover !important;
 				object-position: center !important;
-				transition: transform 0.3s ease;
+				transition: transform 0.3s ease, opacity 0.3s ease;
+				opacity: 0; /* Empieza invisible */
 			}
 
-			/* 5. Efecto zoom al pasar el ratón */
+			/* 5. Cuando la imagen termina de cargar, aparece suavemente */
+			#thumbnails article .thumbnail img.loaded {
+				opacity: 1;
+			}
+
+			/* 6. Efecto zoom al pasar el ratón */
 			#thumbnails article:hover img {
 				transform: scale(1.05);
 			}
 
-			/* 6. Ocultar títulos y textos en el mosaico */
+			/* 7. Ocultar títulos y textos en el mosaico */
 			#thumbnails article h2,
 			#thumbnails article p {
 				display: none !important;
 			}
 
-			/* 7. Móviles: mantener 2 columnas pero más pequeñas */
+			/* 8. Móviles: mantener 2 columnas pero más pequeñas */
 			@media screen and (max-width: 480px) {
 				#thumbnails {
 					grid-template-columns: repeat(2, 1fr) !important;
+					background: #f0f0f0 !important;
 				}
 				#thumbnails article {
 					height: 90px !important;
@@ -107,6 +116,12 @@
 										<img src="${foto.imagen}" alt="" />
 									</a>
 								`;
+								// Cuando la imagen carga, añade clase "loaded" para que aparezca suavemente
+								const img = art.querySelector('img');
+								img.addEventListener('load', () => img.classList.add('loaded'));
+								// Si ya estaba cacheada y cargó antes del listener
+								if (img.complete) img.classList.add('loaded');
+
 								contenedor.appendChild(art);
 							}
 						});
