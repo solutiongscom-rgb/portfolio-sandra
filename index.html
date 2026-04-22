@@ -1,30 +1,33 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-		<title>Portfolio Sandra</title>
+		<title>Portfolio Sandra Martinez</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-		<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-	<style>
-  /* Forzamos que cada 'artículo' (el mosaico) sea siempre wide (ancho y bajo) */
-  #thumbnails article {
-    height: 280px; /* Forzamos altura uniforme. Ajusta si la quieres más baja o alta */
-    overflow: hidden; /* Ocultamos lo que sobresale */
-    display: flex; /* Ayuda a centrar */
-    align-items: center; /* Centramos horizontalmente */
-    justify-content: center; /* Centramos verticalmente */
-  }
+		
+		<style>
+			/* CORRECCIÓN DE MOSAICO: Para que todas las fotos midan lo mismo */
+			#thumbnails article {
+				height: 30vh; /* Altura uniforme basada en la pantalla */
+				min-height: 200px;
+				background-color: #111;
+			}
 
-  /* Decimos a la imagen que 'llene' ese hueco sin deformarse y se centre */
-  #thumbnails article .thumbnail img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important; /* Esta es la propiedad mágica que lo arregla */
-    object-position: center !important; /* Centramos el recorte en el medio */
-  }
-</style>
+			#thumbnails article .thumbnail img {
+				width: 100% !important;
+				height: 100% !important;
+				object-fit: cover !important; /* Corta la foto para que llene el hueco */
+				object-position: center !important;
+				display: block;
+			}
+
+			/* Evita que el título se mueva si la foto es distinta */
+			#thumbnails article h2 {
+				pointer-events: none;
+			}
+		</style>
 	</head>
 	<body class="is-preload-0 is-preload-1 is-preload-2">
 
@@ -32,7 +35,7 @@
 
 				<header id="header">
 						<h1>Sandra Martinez</h1>
-						<p>Portfolio</p>
+						<p>Portfolio Fotográfico</p>
 						<ul class="icons">
 							<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
 							<li><a href="#" class="icon fa-envelope"><span class="label">Email</span></a></li>
@@ -54,49 +57,48 @@
 			<script src="assets/js/browser.min.js"></script>
 			<script src="assets/js/breakpoints.min.js"></script>
 			
-		<script>
-				// Añadimos un "marcador de tiempo" para que el archivo siempre parezca nuevo
-fetch('https://script.google.com/macros/s/AKfycbxQmQGl6ejwxhUVy0irWLtreT8t-EQzdiIqJAqpwlmhQM4fEaHXTzZruaWofNDLFB0/exec')
+			<script>
+				// CONEXIÓN CON TU GOOGLE SHEETS
+				const urlGoogleSheet = 'https://script.google.com/macros/s/AKfycbxQmQGl6ejwxhUVy0irWLtreT8t-EQzdiIqJAqpwlmhQM4fEaHXTzZruaWofNDLFB0/exec';
+
+				fetch(urlGoogleSheet)
 					.then(response => response.json())
 					.then(data => {
-						const contenedorFotos = document.getElementById('thumbnails');
+						const contenedor = document.getElementById('thumbnails');
 						
 						if (data.galeria && data.galeria.length > 0) {
-							contenedorFotos.innerHTML = ''; // Limpiamos la zona
+							contenedor.innerHTML = ''; 
 							
-							// Inyectamos las fotos de Sandra
 							data.galeria.forEach(foto => {
-								const articulo = document.createElement('article');
-								articulo.innerHTML = `
-									<a class="thumbnail" href="${foto.imagen}">
-										<img src="${foto.imagen}" alt="${foto.titulo || ''}" />
-									</a>
-									<h2>${foto.titulo || ''}</h2>
-									<p>${foto.desc || ''}</p>
-								`;
-								contenedorFotos.appendChild(articulo);
+								if(foto.imagen) { // Solo si hay enlace de imagen
+									const articulo = document.createElement('article');
+									articulo.innerHTML = `
+										<a class="thumbnail" href="${foto.imagen}">
+											<img src="${foto.imagen}" alt="${foto.titulo || ''}" />
+										</a>
+										<h2>${foto.titulo || ''}</h2>
+										<p>${foto.desc || ''}</p>
+									`;
+									contenedor.appendChild(articulo);
+								}
 							});
 						}
-						// Llamamos al diseño SOLO cuando las fotos ya están cargadas
-						cargarEfectosDeDiseno();
+						cargarEfectos();
 					})
 					.catch(error => {
-						console.log("Cargando web inicial...");
-						cargarEfectosDeDiseno();
+						console.error("Error cargando fotos:", error);
+						cargarEfectos();
 					});
 
-				function cargarEfectosDeDiseno() {
-					const scriptDiseno = document.createElement('script');
-					scriptDiseno.src = 'assets/js/main.js';
-					
-					// MAGIA PURA: Cuando el diseño termine de cargar, ¡Levantamos el telón negro!
-					scriptDiseno.onload = function() {
+				function cargarEfectos() {
+					const script = document.createElement('script');
+					script.src = 'assets/js/main.js';
+					script.onload = function() {
 						setTimeout(() => {
 							document.body.classList.remove('is-preload-0', 'is-preload-1', 'is-preload-2');
-						}, 200); // Le damos medio segundito de margen visual
+						}, 300);
 					};
-					
-					document.body.appendChild(scriptDiseno);
+					document.body.appendChild(script);
 				}
 			</script>
 	</body>
