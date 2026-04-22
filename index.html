@@ -8,37 +8,30 @@
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		
 		<style>
-			/* ==========================================================
-			   SOLUCIÓN MOSAICO UNIFORME (PANORÁMICO)
-			   ========================================================== */
-
-			/* 1. Forzamos que todos los cuadritos midan lo mismo de alto */
+			/* REGLAS PARA UN MOSAICO PERFECTO */
+			
+			/* 1. Forzamos que cada cuadro tenga siempre la misma altura */
 			#thumbnails article {
-				height: 250px !important; /* Altura fija para todas las miniaturas */
-				overflow: hidden;
-				background-color: #000;
+				height: 250px !important; /* Altura fija para que todas las filas sean iguales */
+				max-height: 250px !important;
+				background: #000;
+				margin: 0 !important; /* Mantenemos el estilo pegado original */
 			}
 
-			/* 2. Hacemos que la foto rellene el espacio sin bandas negras */
+			/* 2. Forzamos a la imagen a rellenar el cuadro SIN dejar huecos negros */
 			#thumbnails article .thumbnail img {
 				width: 100% !important;
 				height: 100% !important;
-				object-fit: cover !important; /* ESTO ES LO MÁS IMPORTANTE: Rellena y recorta */
-				object-position: center !important; /* Centra el recorte */
-				display: block;
+				object-fit: cover !important; /* Corta los lados o arriba/abajo para rellenar */
+				object-position: center !important;
+				display: block !important;
 			}
 
-			/* Ajuste para que los títulos no se pisen */
-			#thumbnails article h2 {
-				pointer-events: none;
-				text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-			}
-
-			/* Evita que el mosaico se vea vacío mientras carga */
-			#thumbnails {
-				display: flex;
-				flex-wrap: wrap;
-				min-height: 100vh;
+			/* 3. Ajuste para que el diseño no se "rompa" en móviles */
+			@media screen and (max-width: 480px) {
+				#thumbnails article {
+					height: 200px !important;
+				}
 			}
 		</style>
 	</head>
@@ -46,73 +39,64 @@
 
 		<div id="main">
 
-			<header id="header">
-				<h1>Sandra Martinez</h1>
-				<p>Portfolio</p>
-				<ul class="icons">
-					<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-					<li><a href="#" class="icon fa-envelope"><span class="label">Email</span></a></li>
-				</ul>
-			</header>
+				<header id="header">
+						<h1>Sandra Martinez</h1>
+						<p>Portfolio</p>
+						<ul class="icons">
+							<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+							<li><a href="#" class="icon fa-envelope"><span class="label">Email</span></a></li>
+						</ul>
+					</header>
 
-			<section id="thumbnails">
-				</section>
+				<section id="thumbnails">
+						</section>
 
-			<footer id="footer">
-				<ul class="copyright">
-					<li>&copy; Portfolio.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a>.</li>
-				</ul>
-			</footer>
+				<footer id="footer">
+						<ul class="copyright">
+							<li>&copy; Portfolio.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a>.</li>
+						</ul>
+					</footer>
 
-		</div>
+			</div>
 
 		<script src="assets/js/jquery.min.js"></script>
-		<script src="assets/js/browser.min.js"></script>
-		<script src="assets/js/breakpoints.min.js"></script>
-		
-		<script>
-			// TU URL DE GOOGLE SHEETS
-			const urlAPI = 'https://script.google.com/macros/s/AKfycbxQmQGl6ejwxhUVy0irWLtreT8t-EQzdiIqJAqpwlmhQM4fEaHXTzZruaWofNDLFB0/exec';
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			
+			<script>
+				const urlAPI = 'https://script.google.com/macros/s/AKfycbxQmQGl6ejwxhUVy0irWLtreT8t-EQzdiIqJAqpwlmhQM4fEaHXTzZruaWofNDLFB0/exec';
 
-			fetch(urlAPI)
-				.then(response => response.json())
-				.then(data => {
-					const contenedor = document.getElementById('thumbnails');
-					
-					if (data.galeria && data.galeria.length > 0) {
-						contenedor.innerHTML = ''; 
-						
-						data.galeria.forEach(foto => {
-							if(foto.imagen && foto.imagen.trim() !== "") {
-								const articulo = document.createElement('article');
-								articulo.innerHTML = `
-									<a class="thumbnail" href="${foto.imagen}">
-										<img src="${foto.imagen}" alt="${foto.titulo || ''}" />
-									</a>
-									<h2>${foto.titulo || ''}</h2>
-									<p>${foto.desc || ''}</p>
-								`;
-								contenedor.appendChild(articulo);
-							}
-						});
-					}
-					activarDiseno();
-				})
-				.catch(error => {
-					console.error("Error:", error);
-					activarDiseno();
-				});
-
-			function activarDiseno() {
-				const script = document.createElement('script');
-				script.src = 'assets/js/main.js';
-				script.onload = function() {
-					setTimeout(() => {
-						document.body.classList.remove('is-preload-0', 'is-preload-1', 'is-preload-2');
-					}, 300);
-				};
-				document.body.appendChild(script);
-			}
-		</script>
+				fetch(urlAPI)
+					.then(response => response.json())
+					.then(data => {
+						const section = document.getElementById('thumbnails');
+						if (data.galeria && data.galeria.length > 0) {
+							section.innerHTML = '';
+							data.galeria.forEach(foto => {
+								if(foto.imagen) {
+									const art = document.createElement('article');
+									art.innerHTML = `
+										<a class="thumbnail" href="${foto.imagen}">
+											<img src="${foto.imagen}" alt="" />
+										</a>
+										<h2>${foto.titulo || ''}</h2>
+										<p>${foto.desc || ''}</p>
+									`;
+									section.appendChild(art);
+								}
+							});
+						}
+						// Iniciamos el diseño
+						const script = document.createElement('script');
+						script.src = 'assets/js/main.js';
+						script.onload = function() {
+							setTimeout(() => {
+								document.body.classList.remove('is-preload-0', 'is-preload-1', 'is-preload-2');
+							}, 200);
+						};
+						document.body.appendChild(script);
+					})
+					.catch(err => console.error(err));
+			</script>
 	</body>
 </html>
