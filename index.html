@@ -56,7 +56,7 @@
 			
 		<script>
 				// Añadimos un "marcador de tiempo" para que el archivo siempre parezca nuevo
-fetch('/datos.json?v=' + Date.now())
+fetch('https://script.google.com/macros/s/AKfycbxQmQGl6ejwxhUVy0irWLtreT8t-EQzdiIqJAqpwlmhQM4fEaHXTzZruaWofNDLFB0/exec')
 					.then(response => response.json())
 					.then(data => {
 						const contenedorFotos = document.getElementById('thumbnails');
