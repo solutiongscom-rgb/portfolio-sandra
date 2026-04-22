@@ -1,6 +1,11 @@
 {
   "galeria": [
     {
+      "titulo": "Prueba 4",
+      "desc": "prueba 4",
+      "imagen": "images/fulls/09.jpg"
+    },
+    {
       "titulo": "prueba3",
       "desc": "prueba3",
       "imagen": "images/fulls/01.jpg"
