@@ -8,29 +8,58 @@
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		
 		<style>
-			/* REGLAS PARA UN MOSAICO PERFECTO */
+			/* --- SUPER PARCHE DE DISEÑO: MOSAICO PROFESIONAL --- */
 			
-			/* 1. Forzamos que cada cuadro tenga siempre la misma altura */
-			#thumbnails article {
-				height: 250px !important; /* Altura fija para que todas las filas sean iguales */
-				max-height: 250px !important;
-				background: #000;
-				margin: 0 !important; /* Mantenemos el estilo pegado original */
+			/* 1. Forzamos que el contenedor de fotos sea una rejilla limpia */
+			#thumbnails {
+				display: grid !important;
+				grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+				grid-gap: 5px !important;
+				padding: 5px !important;
+				background: #111 !important;
 			}
 
-			/* 2. Forzamos a la imagen a rellenar el cuadro SIN dejar huecos negros */
+			/* 2. Cada cuadro del mosaico: altura fija para que todos sean iguales */
+			#thumbnails article {
+				margin: 0 !important;
+				height: 200px !important; /* Altura de la miniatura, cámbiala si la quieres más alta */
+				width: 100% !important;
+				position: relative !important;
+				overflow: hidden !important;
+			}
+
+			/* 3. La foto: RELLENO TOTAL sin bandas negras */
+			#thumbnails article .thumbnail {
+				height: 100% !important;
+				width: 100% !important;
+				border: none !important;
+			}
+
 			#thumbnails article .thumbnail img {
 				width: 100% !important;
 				height: 100% !important;
-				object-fit: cover !important; /* Corta los lados o arriba/abajo para rellenar */
+				object-fit: cover !important; /* RECORTA AUTOMÁTICAMENTE PARA RELLENAR */
 				object-position: center !important;
-				display: block !important;
+				transition: transform 0.3s ease;
 			}
 
-			/* 3. Ajuste para que el diseño no se "rompa" en móviles */
+			/* Efecto de zoom al pasar el ratón */
+			#thumbnails article:hover img {
+				transform: scale(1.05);
+			}
+
+			/* Limpieza de textos */
+			#thumbnails article h2, #thumbnails article p {
+				display: none !important; /* Oculta títulos en el mosaico para que sea más limpio */
+			}
+
+			/* Ajuste para móviles: 2 columnas */
 			@media screen and (max-width: 480px) {
+				#thumbnails {
+					grid-template-columns: repeat(2, 1fr) !important;
+				}
 				#thumbnails article {
-					height: 200px !important;
+					height: 150px !important;
 				}
 			}
 		</style>
@@ -38,65 +67,62 @@
 	<body class="is-preload-0 is-preload-1 is-preload-2">
 
 		<div id="main">
+			<header id="header">
+				<h1>Sandra Martinez</h1>
+				<p>Portfolio Fotográfico</p>
+				<ul class="icons">
+					<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+					<li><a href="#" class="icon fa-envelope"><span class="label">Email</span></a></li>
+				</ul>
+			</header>
 
-				<header id="header">
-						<h1>Sandra Martinez</h1>
-						<p>Portfolio</p>
-						<ul class="icons">
-							<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-							<li><a href="#" class="icon fa-envelope"><span class="label">Email</span></a></li>
-						</ul>
-					</header>
+			<section id="thumbnails">
+				</section>
 
-				<section id="thumbnails">
-						</section>
-
-				<footer id="footer">
-						<ul class="copyright">
-							<li>&copy; Portfolio.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a>.</li>
-						</ul>
-					</footer>
-
-			</div>
+			<footer id="footer">
+				<ul class="copyright">
+					<li>&copy; Portfolio. Design: HTML5 UP.</li>
+				</ul>
+			</footer>
+		</div>
 
 		<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			
-			<script>
-				const urlAPI = 'https://script.google.com/macros/s/AKfycbxQmQGl6ejwxhUVy0irWLtreT8t-EQzdiIqJAqpwlmhQM4fEaHXTzZruaWofNDLFB0/exec';
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		
+		<script>
+			// TU URL DE GOOGLE SHEETS
+			const urlAPI = 'https://script.google.com/macros/s/AKfycbxQmQGl6ejwxhUVy0irWLtreT8t-EQzdiIqJAqpwlmhQM4fEaHXTzZruaWofNDLFB0/exec';
 
-				fetch(urlAPI)
-					.then(response => response.json())
-					.then(data => {
-						const section = document.getElementById('thumbnails');
-						if (data.galeria && data.galeria.length > 0) {
-							section.innerHTML = '';
-							data.galeria.forEach(foto => {
-								if(foto.imagen) {
-									const art = document.createElement('article');
-									art.innerHTML = `
-										<a class="thumbnail" href="${foto.imagen}">
-											<img src="${foto.imagen}" alt="" />
-										</a>
-										<h2>${foto.titulo || ''}</h2>
-										<p>${foto.desc || ''}</p>
-									`;
-									section.appendChild(art);
-								}
-							});
-						}
-						// Iniciamos el diseño
-						const script = document.createElement('script');
-						script.src = 'assets/js/main.js';
-						script.onload = function() {
-							setTimeout(() => {
-								document.body.classList.remove('is-preload-0', 'is-preload-1', 'is-preload-2');
-							}, 200);
-						};
-						document.body.appendChild(script);
-					})
-					.catch(err => console.error(err));
-			</script>
+			fetch(urlAPI)
+				.then(response => response.json())
+				.then(data => {
+					const contenedor = document.getElementById('thumbnails');
+					if (data.galeria && data.galeria.length > 0) {
+						contenedor.innerHTML = '';
+						data.galeria.forEach(foto => {
+							if(foto.imagen && foto.imagen.includes('http')) {
+								const art = document.createElement('article');
+								art.innerHTML = `
+									<a class="thumbnail" href="${foto.imagen}">
+										<img src="${foto.imagen}" alt="" />
+									</a>
+								`;
+								contenedor.appendChild(art);
+							}
+						});
+					}
+					
+					// Lanzamos el motor de la plantilla
+					const script = document.createElement('script');
+					script.src = 'assets/js/main.js';
+					script.onload = function() {
+						setTimeout(() => {
+							document.body.classList.remove('is-preload-0', 'is-preload-1', 'is-preload-2');
+						}, 300);
+					};
+					document.body.appendChild(script);
+				});
+		</script>
 	</body>
 </html>
