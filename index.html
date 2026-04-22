@@ -37,40 +37,46 @@
 			<script src="assets/js/breakpoints.min.js"></script>
 			
 		<script>
-				window.addEventListener('load', function() {
-					fetch('/datos.json')
-						.then(response => response.json())
-						.then(data => {
-							const contenedorFotos = document.getElementById('thumbnails');
+				fetch('/datos.json')
+					.then(response => response.json())
+					.then(data => {
+						const contenedorFotos = document.getElementById('thumbnails');
+						
+						if (data.galeria && data.galeria.length > 0) {
+							contenedorFotos.innerHTML = ''; // Limpiamos la zona
 							
-							if (data.galeria && data.galeria.length > 0) {
-								contenedorFotos.innerHTML = ''; // Limpiamos la zona
-								
-								// Inyectamos las fotos de Sandra
-								data.galeria.forEach(foto => {
-									const articulo = document.createElement('article');
-									articulo.innerHTML = `
-										<a class="thumbnail" href="${foto.imagen}">
-											<img src="${foto.imagen}" alt="${foto.titulo || ''}" />
-										</a>
-										<h2>${foto.titulo || ''}</h2>
-										<p>${foto.desc || ''}</p>
-									`;
-									contenedorFotos.appendChild(articulo);
-								});
-							}
-							// MAGIA: Llamamos al diseño (main.js) SOLO cuando las fotos ya están cargadas
-							cargarEfectosDeDiseno();
-						})
-						.catch(error => {
-							console.log("Cargando web inicial...");
-							cargarEfectosDeDiseno();
-						});
-				});
+							// Inyectamos las fotos de Sandra
+							data.galeria.forEach(foto => {
+								const articulo = document.createElement('article');
+								articulo.innerHTML = `
+									<a class="thumbnail" href="${foto.imagen}">
+										<img src="${foto.imagen}" alt="${foto.titulo || ''}" />
+									</a>
+									<h2>${foto.titulo || ''}</h2>
+									<p>${foto.desc || ''}</p>
+								`;
+								contenedorFotos.appendChild(articulo);
+							});
+						}
+						// Llamamos al diseño SOLO cuando las fotos ya están cargadas
+						cargarEfectosDeDiseno();
+					})
+					.catch(error => {
+						console.log("Cargando web inicial...");
+						cargarEfectosDeDiseno();
+					});
 
 				function cargarEfectosDeDiseno() {
 					const scriptDiseno = document.createElement('script');
 					scriptDiseno.src = 'assets/js/main.js';
+					
+					// MAGIA PURA: Cuando el diseño termine de cargar, ¡Levantamos el telón negro!
+					scriptDiseno.onload = function() {
+						setTimeout(() => {
+							document.body.classList.remove('is-preload-0', 'is-preload-1', 'is-preload-2');
+						}, 200); // Le damos medio segundito de margen visual
+					};
+					
 					document.body.appendChild(scriptDiseno);
 				}
 			</script>
