@@ -1,14 +1,19 @@
 {
   "galeria": [
     {
-      "titulo": "prueba",
-      "desc": "prueba",
-      "imagen": "images/fulls/foto-1-.jpg"
+      "titulo": "prueba3",
+      "desc": "prueba3",
+      "imagen": "images/fulls/01.jpg"
     },
     {
       "titulo": "prueba2",
       "desc": "prueba2",
       "imagen": "images/fulls/foto-3-.jpg"
+    },
+    {
+      "titulo": "prueba",
+      "desc": "prueba",
+      "imagen": "images/fulls/foto-1-.jpg"
     }
   ]
 }
