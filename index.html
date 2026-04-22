@@ -37,7 +37,8 @@
 			<script src="assets/js/breakpoints.min.js"></script>
 			
 		<script>
-				fetch('/datos.json')
+				// Añadimos un "marcador de tiempo" para que el archivo siempre parezca nuevo
+fetch('/datos.json?v=' + Date.now())
 					.then(response => response.json())
 					.then(data => {
 						const contenedorFotos = document.getElementById('thumbnails');
