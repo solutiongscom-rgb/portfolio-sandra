@@ -9,52 +9,30 @@
 		
 		<style>
 			/* ==========================================================
-			   SOLUCIÓN DEFINITIVA: MOSAICO CUADRADO Y SIN BORDES
+			   PARCHE DE COMPATIBILIDAD CON GOOGLE SHEETS
 			   ========================================================== */
-
-			/* 1. Definimos los cuadros del mosaico como CUADRADOS perfectos */
+			
+			/* 1. Mantenemos el mosaico original pero forzamos que
+			   todas las fotos tengan la misma altura (panorámica) */
 			#thumbnails article {
-				width: 250px !important;  /* Ancho fijo (puedes subirlo o bajarlo) */
-				height: 250px !important; /* ALTO IGUAL AL ANCHO = CUADRADO */
-				overflow: hidden;
-				margin: 5px !important; /* Un pequeño espacio entre fotos */
-				padding: 0 !important;
-				border: none !important; /* Quitamos bordes raros de la plantilla */
-				display: inline-block; /* Para que se alineen uno al lado del otro */
-				vertical-align: top;
-				background: #000; /* Fondo negro si la foto falla */
+				height: 280px !important; /* Altura original de la plantilla */
+				overflow: hidden; /* Corta lo que sobre si no es panorámica */
+				background: #000; /* Fondo negro si la foto es más estrecha */
 			}
 
-			/* 2. Forzamos que el enlace ocupe todo el cuadro */
-			#thumbnails article .thumbnail {
-				width: 100% !important;
-				height: 100% !important;
-				display: block !important;
-				margin: 0 !important;
-				padding: 0 !important;
-				border: none !important;
-			}
-
-			/* 3. La MAGIA: object-fit cover en un cuadro perfecto ELIMINA las bandas negras */
+			/* 2. La propiedad mágica: object-fit cover. 
+			   Esto estira/recorta la foto para que LLENE el hueco panorámico
+			   sin deformarse, eliminando bandas negras de forma inteligente. */
 			#thumbnails article .thumbnail img {
 				width: 100% !important;
 				height: 100% !important;
-				object-fit: cover !important; /* ESTA ES LA CLAVE: Llena el cuadro y recorta lo sobrante */
-				object-position: center !important; /* Centra el recorte para no cortar cabezas */
-				margin: 0 !important;
-				padding: 0 !important;
-				border: none !important;
+				object-fit: cover !important; /* ESTA ES LA CLAVE */
+				object-position: center !important; /* Centra el recorte */
 			}
 
 			/* Evita que los títulos se muevan */
 			#thumbnails article h2 {
 				pointer-events: none;
-			}
-			
-			/* Limpieza adicional del contenedor principal */
-			#thumbnails {
-				text-align: center; /* Centra el mosaico entero en la pantalla */
-				padding: 20px !important;
 			}
 		</style>
 	</head>
