@@ -108,6 +108,33 @@
 			<script src="assets/js/browser.min.js"></script>
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/main.js"></script>
-
+<script>
+  window.addEventListener('load', function() {
+    fetch('/datos.json')
+      .then(response => response.json())
+      .then(data => {
+        if (data.galeria && data.galeria.length > 0) {
+          const contenedorPrincipal = document.getElementById('main');
+          
+          // Borramos las fotos de prueba
+          contenedorPrincipal.innerHTML = ''; 
+          
+          // Inyectamos las fotos de Sandra
+          data.galeria.forEach(foto => {
+            const articulo = document.createElement('article');
+            articulo.innerHTML = `
+              <a class="thumbnail" href="${foto.imagen}">
+                <img src="${foto.imagen}" alt="${foto.titulo || ''}" />
+              </a>
+              <h2>${foto.titulo || ''}</h2>
+              <p>${foto.desc || ''}</p>
+            `;
+            contenedorPrincipal.appendChild(articulo);
+          });
+        }
+      })
+      .catch(error => console.log("Leyendo base de datos..."));
+  });
+</script>
 	</body>
 </html>
