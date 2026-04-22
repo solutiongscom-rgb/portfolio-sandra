@@ -7,6 +7,24 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+	<style>
+  /* Forzamos que cada 'artículo' (el mosaico) sea siempre wide (ancho y bajo) */
+  #thumbnails article {
+    height: 280px; /* Forzamos altura uniforme. Ajusta si la quieres más baja o alta */
+    overflow: hidden; /* Ocultamos lo que sobresale */
+    display: flex; /* Ayuda a centrar */
+    align-items: center; /* Centramos horizontalmente */
+    justify-content: center; /* Centramos verticalmente */
+  }
+
+  /* Decimos a la imagen que 'llene' ese hueco sin deformarse y se centre */
+  #thumbnails article .thumbnail img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important; /* Esta es la propiedad mágica que lo arregla */
+    object-position: center !important; /* Centramos el recorte en el medio */
+  }
+</style>
 	</head>
 	<body class="is-preload-0 is-preload-1 is-preload-2">
 
