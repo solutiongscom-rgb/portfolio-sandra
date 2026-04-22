@@ -1,0 +1,22 @@
+backend:
+  name: git-gateway
+  branch: main # Si tu rama principal se llama master, cámbialo a master
+
+media_folder: "images/fulls"
+public_folder: "images/fulls"
+
+collections:
+  - name: "portfolio"
+    label: "Configuración del Portfolio"
+    files:
+      - label: "Mis Fotos"
+        name: "fotos"
+        file: "datos.json"
+        fields:
+          - label: "Galería"
+            name: "galeria"
+            widget: "list"
+            fields:
+              - {label: "Título", name: "titulo", widget: "string", required: false}
+              - {label: "Descripción", name: "desc", widget: "text", required: false}
+              - {label: "Foto", name: "imagen", widget: "image"}
