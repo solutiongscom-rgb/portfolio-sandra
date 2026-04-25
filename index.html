@@ -8,8 +8,56 @@
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		
 		<style>
-			/* --- MOSAICO 2 COLUMNAS --- */
 
+			/* =========================================
+			   PARCHE 1: Panel lateral siempre visible
+			   Sobreescribe body.fullscreen #main del CSS
+			========================================= */
+			body.fullscreen #main {
+				visibility: visible !important;
+				right: 0 !important;
+				left: auto !important;
+				opacity: 1 !important;
+			}
+
+			/* En móvil (<480px) el CSS original hace opacity:0, lo revertimos */
+			@media screen and (max-width: 480px) {
+				body.fullscreen #main {
+					opacity: 1 !important;
+					visibility: visible !important;
+				}
+			}
+
+			/* Ocultar el botón de toggle (la X y el icono de abrir) */
+			#main .toggle,
+			#viewer .inner .toggle {
+				display: none !important;
+			}
+
+			/* =========================================
+			   PARCHE 2: Viewer siempre con el ancho
+			   correcto (no ocupa el 100% salvo fullscreen)
+			========================================= */
+			@media screen and (max-width: 980px) {
+				#viewer {
+					width: calc(100% - 19em) !important;
+				}
+			}
+
+			@media screen and (max-width: 480px) {
+				#viewer {
+					opacity: 1 !important;
+					width: 100% !important;
+				}
+				/* En móvil el panel va encima del viewer */
+				#main {
+					width: 100% !important;
+				}
+			}
+
+			/* =========================================
+			   MOSAICO 2 COLUMNAS
+			========================================= */
 			#thumbnails {
 				display: grid !important;
 				grid-template-columns: repeat(2, 1fr) !important;
@@ -60,37 +108,6 @@
 				display: none !important;
 			}
 
-			/* Forzar que el panel lateral SIEMPRE sea visible */
-			#main {
-				display: block !important;
-				visibility: visible !important;
-				opacity: 1 !important;
-				pointer-events: auto !important;
-				transform: none !important;
-			}
-
-			body.fullscreen #main {
-				display: block !important;
-				visibility: visible !important;
-				opacity: 1 !important;
-				pointer-events: auto !important;
-				transform: none !important;
-				right: 0 !important;
-			}
-
-			/* Ocultar botón toggle */
-			.toggle {
-				display: none !important;
-			}
-
-			@media screen and (max-width: 480px) {
-				#thumbnails {
-					grid-template-columns: repeat(2, 1fr) !important;
-				}
-				#thumbnails article {
-					height: 90px !important;
-				}
-			}
 		</style>
 	</head>
 	<body class="is-preload-0 is-preload-1 is-preload-2">
@@ -153,11 +170,11 @@
 					script.src = 'assets/js/main.js';
 					script.onload = function() {
 
-						// Neutralizar hide() y toggle() para que el panel nunca desaparezca
+						// Neutralizar hide() y toggle() — el panel nunca se esconde
 						main.hide   = function() {};
 						main.toggle = function() {};
 
-						// Forzar que la primera foto se muestre siempre al cargar
+						// Cargar la primera foto automáticamente
 						setTimeout(function() {
 							main.switchTo(0, true);
 							document.body.classList.remove('is-preload-0', 'is-preload-1', 'is-preload-2');
