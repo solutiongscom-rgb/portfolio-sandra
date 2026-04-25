@@ -60,6 +60,20 @@
 				display: none !important;
 			}
 
+			/* Forzar que el panel lateral SIEMPRE sea visible */
+			body.fullscreen #main {
+				display: block !important;
+				visibility: visible !important;
+				opacity: 1 !important;
+				transform: none !important;
+				pointer-events: auto !important;
+			}
+
+			/* Ocultar el botón toggle que provoca el fullscreen */
+			.toggle {
+				display: none !important;
+			}
+
 			@media screen and (max-width: 480px) {
 				#thumbnails {
 					grid-template-columns: repeat(2, 1fr) !important;
@@ -105,9 +119,8 @@
 							if (foto.imagen && foto.imagen.includes('http')) {
 								const art = document.createElement('article');
 
-								// Título y descripción para el lightbox
 								const titulo = foto.titulo || '';
-								const desc = foto.desc || '';
+								const desc   = foto.desc   || '';
 
 								art.innerHTML = `
 									<a class="thumbnail" href="${foto.imagen}">
@@ -126,13 +139,19 @@
 						});
 					}
 
-					// Lanzamos el motor de la plantilla (gestiona el lightbox)
+					// Lanzamos el motor de la plantilla
 					const script = document.createElement('script');
 					script.src = 'assets/js/main.js';
 					script.onload = function() {
 						setTimeout(() => {
 							document.body.classList.remove('is-preload-0', 'is-preload-1', 'is-preload-2');
 						}, 300);
+
+						// Sobreescribir hide() para que nunca oculte el panel lateral
+						if (typeof main !== 'undefined') {
+							main.hide = function() {};
+							main.toggle = function() {};
+						}
 					};
 					document.body.appendChild(script);
 				});
