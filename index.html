@@ -10,6 +10,7 @@
 		<style>
 			/* --- MOSAICO 2 COLUMNAS --- */
 
+			/* 1. Rejilla de 2 columnas fijas */
 			#thumbnails {
 				display: grid !important;
 				grid-template-columns: repeat(2, 1fr) !important;
@@ -18,6 +19,7 @@
 				background: transparent !important;
 			}
 
+			/* 2. Cada miniatura: fondo transparente */
 			#thumbnails article {
 				margin: 0 !important;
 				height: 120px !important;
@@ -29,6 +31,7 @@
 				box-shadow: none !important;
 			}
 
+			/* 3. Contenedor del enlace */
 			#thumbnails article .thumbnail {
 				display: block !important;
 				height: 100% !important;
@@ -38,6 +41,7 @@
 				background: transparent !important;
 			}
 
+			/* 4. Imagen: relleno total */
 			#thumbnails article .thumbnail img {
 				width: 100% !important;
 				height: 100% !important;
@@ -47,19 +51,23 @@
 				opacity: 0;
 			}
 
+			/* 5. Fade-in cuando termina de cargar */
 			#thumbnails article .thumbnail img.loaded {
 				opacity: 1;
 			}
 
+			/* 6. Efecto zoom al pasar el ratón */
 			#thumbnails article:hover img {
 				transform: scale(1.05);
 			}
 
+			/* 7. Ocultar títulos y textos */
 			#thumbnails article h2,
 			#thumbnails article p {
 				display: none !important;
 			}
 
+			/* 8. Móviles */
 			@media screen and (max-width: 480px) {
 				#thumbnails {
 					grid-template-columns: repeat(2, 1fr) !important;
@@ -93,6 +101,7 @@
 		<script src="assets/js/breakpoints.min.js"></script>
 		
 		<script>
+			// TU URL DE GOOGLE SHEETS
 			const urlAPI = 'https://script.google.com/macros/s/AKfycbxQmQGl6ejwxhUVy0irWLtreT8t-EQzdiIqJAqpwlmhQM4fEaHXTzZruaWofNDLFB0/exec';
 
 			fetch(urlAPI)
@@ -104,29 +113,20 @@
 						data.galeria.forEach(foto => {
 							if (foto.imagen && foto.imagen.includes('http')) {
 								const art = document.createElement('article');
-
-								// Título y descripción para el lightbox
-								const titulo = foto.titulo || '';
-								const desc = foto.desc || '';
-
 								art.innerHTML = `
 									<a class="thumbnail" href="${foto.imagen}">
-										<img src="${foto.imagen}" alt="${titulo}" />
+										<img src="${foto.imagen}" alt="" />
 									</a>
-									<h2>${titulo}</h2>
-									<p>${desc}</p>
 								`;
-
 								const img = art.querySelector('img');
 								img.addEventListener('load', () => img.classList.add('loaded'));
 								if (img.complete) img.classList.add('loaded');
-
 								contenedor.appendChild(art);
 							}
 						});
 					}
 
-					// Lanzamos el motor de la plantilla (gestiona el lightbox)
+					// Lanzamos el motor de la plantilla
 					const script = document.createElement('script');
 					script.src = 'assets/js/main.js';
 					script.onload = function() {
